@@ -1,0 +1,401 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F3E1DB40-1F10-E84D-A458-F4DA36CD6F37}</ProjectGuid>
+    <RootNamespace>steerlib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\bin\</OutDir>
+    <IntDir>obj\Debug\steerlib\</IntDir>
+    <TargetName>steerlib</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\bin\</OutDir>
+    <IntDir>obj\x64\Debug\steerlib\</IntDir>
+    <TargetName>steerlib</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\bin\</OutDir>
+    <IntDir>obj\Release\steerlib\</IntDir>
+    <TargetName>steerlib</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\bin\</OutDir>
+    <IntDir>obj\x64\Release\steerlib\</IntDir>
+    <TargetName>steerlib</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\steerlib\include;..\..\external;..\..\steerlib\include\util;..\..\util\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ENABLE_GUI;ENABLE_GLFW;DEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)steerlib.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>ENABLE_GUI;ENABLE_GLFW;DEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\steerlib\include;..\..\external;..\..\steerlib\include\util;..\..\util\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)steerlib.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\steerlib.lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\steerlib\include;..\..\external;..\..\steerlib\include\util;..\..\util\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ENABLE_GUI;ENABLE_GLFW;DEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)steerlib.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>ENABLE_GUI;ENABLE_GLFW;DEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\steerlib\include;..\..\external;..\..\steerlib\include\util;..\..\util\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)steerlib.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\steerlib.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>..\..\steerlib\include;..\..\external;..\..\steerlib\include\util;..\..\util\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ENABLE_GUI;ENABLE_GLFW;NDEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)steerlib.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>ENABLE_GUI;ENABLE_GLFW;NDEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\steerlib\include;..\..\external;..\..\steerlib\include\util;..\..\util\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <OutputFile>$(OutDir)steerlib.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\steerlib.lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>..\..\steerlib\include;..\..\external;..\..\steerlib\include\util;..\..\util\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ENABLE_GUI;ENABLE_GLFW;NDEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)steerlib.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>ENABLE_GUI;ENABLE_GLFW;NDEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\steerlib\include;..\..\external;..\..\steerlib\include\util;..\..\util\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <OutputFile>$(OutDir)steerlib.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\steerlib.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\steerlib\include\Globals.h" />
+    <ClInclude Include="..\..\steerlib\include\SimulationPlugin.h" />
+    <ClInclude Include="..\..\steerlib\include\SteerLib.h" />
+    <ClInclude Include="..\..\steerlib\include\SteerSimPlugin.h" />
+    <ClInclude Include="..\..\steerlib\include\Util.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\AccelerationEfficiencyTechnique.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\AgentMetricsCollector.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\BayesianFilter.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\BenchmarkEngine.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\BenchmarkEnginePrivate.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\CompositeTechnique01.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\CompositeTechnique02.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\CompositeTechniqueEntropy.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\CompositeTechniqueGraph.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\CompositeTechniquePLE.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\EnergyEfficiencyTechnique.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\MetricsData.h" />
+    <ClInclude Include="..\..\steerlib\include\benchmarking\SimulationMetricsCollector.h" />
+    <ClInclude Include="..\..\steerlib\include\griddatabase\GridCell.h" />
+    <ClInclude Include="..\..\steerlib\include\griddatabase\GridDatabase2D.h" />
+    <ClInclude Include="..\..\steerlib\include\griddatabase\GridDatabase2DPrivate.h" />
+    <ClInclude Include="..\..\steerlib\include\griddatabase\GridDatabasePlanningDomain.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\AgentInterface.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\BenchmarkTechniqueInterface.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\EngineControllerInterface.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\EngineInterface.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\ModuleInterface.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\ObstacleInterface.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\PlanningDomainInterface.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\PlanningDomainModuleInterface.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\SpatialDataBaseInterface.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\SpatialDatabaseItem.h" />
+    <ClInclude Include="..\..\steerlib\include\interfaces\SpatialDataBaseModuleInterface.h" />
+    <ClInclude Include="..\..\steerlib\include\modules\DummyAIModule.h" />
+    <ClInclude Include="..\..\steerlib\include\modules\MetricsCollectorModule.h" />
+    <ClInclude Include="..\..\steerlib\include\modules\RecFilePlayerModule.h" />
+    <ClInclude Include="..\..\steerlib\include\modules\SimulationRecorderModule.h" />
+    <ClInclude Include="..\..\steerlib\include\modules\SteerBenchModule.h" />
+    <ClInclude Include="..\..\steerlib\include\modules\SteerBugModule.h" />
+    <ClInclude Include="..\..\steerlib\include\modules\TestCasePlayerModule.h" />
+    <ClInclude Include="..\..\steerlib\include\obstacles\BoxObstacle.h" />
+    <ClInclude Include="..\..\steerlib\include\obstacles\CircleObstacle.h" />
+    <ClInclude Include="..\..\steerlib\include\obstacles\OrientedBoxObstacle.h" />
+    <ClInclude Include="..\..\steerlib\include\obstacles\OrientedWallObstacle.h" />
+    <ClInclude Include="..\..\steerlib\include\obstacles\PolygonObstacle.h" />
+    <ClInclude Include="..\..\steerlib\include\planning\BestFirstSearchPlanner.h" />
+    <ClInclude Include="..\..\steerlib\include\recfileio\RecFileIO.h" />
+    <ClInclude Include="..\..\steerlib\include\recfileio\RecFileIOPrivate.h" />
+    <ClInclude Include="..\..\steerlib\include\simulation\Camera.h" />
+    <ClInclude Include="..\..\steerlib\include\simulation\Clock.h" />
+    <ClInclude Include="..\..\steerlib\include\simulation\SimulationEngine.h" />
+    <ClInclude Include="..\..\steerlib\include\simulation\SimulationOptions.h" />
+    <ClInclude Include="..\..\steerlib\include\simulation\SteeringCommand.h" />
+    <ClInclude Include="..\..\steerlib\include\testcaseio\AgentInitialConditions.h" />
+    <ClInclude Include="..\..\steerlib\include\testcaseio\Behaviour.h" />
+    <ClInclude Include="..\..\steerlib\include\testcaseio\BehaviourParameter.h" />
+    <ClInclude Include="..\..\steerlib\include\testcaseio\ObstacleInitialConditions.h" />
+    <ClInclude Include="..\..\steerlib\include\testcaseio\TestCaseIO.h" />
+    <ClInclude Include="..\..\steerlib\include\testcaseio\TestCaseIOPrivate.h" />
+    <ClInclude Include="..\..\steerlib\include\util\Color.h" />
+    <ClInclude Include="..\..\steerlib\include\util\CommandLineParser.h" />
+    <ClInclude Include="..\..\steerlib\include\util\dmatrix.h" />
+    <ClInclude Include="..\..\steerlib\include\util\DrawLib.h" />
+    <ClInclude Include="..\..\steerlib\include\util\DynamicLibrary.h" />
+    <ClInclude Include="..\..\steerlib\include\util\FrameSaver.h" />
+    <ClInclude Include="..\..\steerlib\include\util\GenericException.h" />
+    <ClInclude Include="..\..\steerlib\include\util\Geometry.h" />
+    <ClInclude Include="..\..\steerlib\include\util\HighResCounter.h" />
+    <ClInclude Include="..\..\steerlib\include\util\MemoryMapper.h" />
+    <ClInclude Include="..\..\steerlib\include\util\Misc.h" />
+    <ClInclude Include="..\..\steerlib\include\util\Mutex.h" />
+    <ClInclude Include="..\..\steerlib\include\util\PerformanceProfiler.h" />
+    <ClInclude Include="..\..\steerlib\include\util\StateMachine.h" />
+    <ClInclude Include="..\..\steerlib\include\util\ThreadedTaskManager.h" />
+    <ClInclude Include="..\..\steerlib\include\util\XMLParser.h" />
+    <ClInclude Include="..\..\steerlib\include\util\XMLParserPrivate.h" />
+    <ClInclude Include="..\..\external\tinyxml\ticpp.h" />
+    <ClInclude Include="..\..\external\tinyxml\ticpprc.h" />
+    <ClInclude Include="..\..\external\tinyxml\tinystr.h" />
+    <ClInclude Include="..\..\external\tinyxml\tinyxml.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\steerlib\src\AgentInterface.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\AgentMetricsCollector.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\BehaviorParameter.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\Behaviour.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\BenchmarkEngine.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\BoxObstacle.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\Camera.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\CircleObstacle.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\Clock.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\CommandLineParser.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\CompositeTechnique01.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\CompositeTechnique02.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\CompositeTechniqueEntropy.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\CompositeTechniqueGraph.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\CompositeTechniquePLE.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\DrawLib.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\DynamicLibrary.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\FrameSaver.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\GridDatabase2D.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\GridDatabasePlanningDomain.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\HighResCounter.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\MemoryMapper.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\Misc.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\OrientedBoxObstacle.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\OrientedWallObstacle.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\PerformanceProfiler.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\PolygonObstacle.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\RecFilePlayerModule.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\RecFileReader.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\RecFileWriter.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\SimulationEngine.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\SimulationMetricsCollector.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\SimulationOptions.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\SimulationRecorderModule.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\StateMachine.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\SteeringCommand.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\TestCasePlayerModule.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\TestCaseReader.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\TestCaseReaderPrivate.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\TestCaseWriter.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\ThreadedTaskManager.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\steerlib\src\XMLParser.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\external\tinyxml\ticpp.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\external\tinyxml\tinystr.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\external\tinyxml\tinyxml.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\external\tinyxml\tinyxmlerror.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\external\tinyxml\tinyxmlparser.cpp">
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="util.vcxproj">
+      <Project>{856E64A2-1793-0C4A-A38F-6540D51AA2EF}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

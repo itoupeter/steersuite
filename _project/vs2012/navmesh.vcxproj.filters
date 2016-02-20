@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="navmeshBuilder">
+      <UniqueIdentifier>{45071B9C-D74B-604E-8CF2-2F5DDAE30E79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="navmeshBuilder\include">
+      <UniqueIdentifier>{954F942E-C102-A449-87E1-DC5ECFBC158F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="navmeshBuilder\src">
+      <UniqueIdentifier>{EC8406B5-C1D8-9646-9699-C20EE5F6FEBA}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\navmeshBuilder\include\ChunkyTriMesh.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\ConvexVolumeTool.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\CrowdTool.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\imgui.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\imguiRenderGL.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\InputGeom.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\Mesh.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\MeshLoaderObj.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\NavMeshModule.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\NavMeshPruneTool.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\NavMeshTesterTool.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\OffMeshConnectionTool.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\opengl.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\PerfTimer.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\RecastNavMeshPlanner.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\Sample.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\SampleInterfaces.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\Sample_SoloMesh.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\stb_truetype.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\Timer.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\navmeshBuilder\include\ValueHistory.h">
+      <Filter>navmeshBuilder\include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\navmeshBuilder\src\ChunkyTriMesh.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\ConvexVolumeTool.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\CrowdTool.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\imgui.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\imguiRenderGL.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\InputGeom.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\Main.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\Mesh.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\MeshLoaderObj.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\NavMeshModule.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\NavMeshPruneTool.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\NavMeshTesterTool.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\OffMeshConnectionTool.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\PerfTimer.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\RecaseNavMeshPlanner.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\Sample.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\SampleInterfaces.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\Sample_SoloMesh.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\Timer.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\navmeshBuilder\src\ValueHistory.cpp">
+      <Filter>navmeshBuilder\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

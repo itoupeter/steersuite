@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="external">
+      <UniqueIdentifier>{684DE89D-CFFF-0143-B635-46352160879B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\recastnavigation">
+      <UniqueIdentifier>{2C79A1A1-3EF6-064B-9B73-A6DCDC99FD3D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\recastnavigation\DetourCrowd">
+      <UniqueIdentifier>{67A81939-FEFE-6E4F-AA4E-C37FCC70FCD2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\recastnavigation\DetourCrowd\Include">
+      <UniqueIdentifier>{7AA0DC7C-3897-3D48-B301-169417EE4CEF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\recastnavigation\DetourCrowd\Source">
+      <UniqueIdentifier>{B1E81958-2DDA-9A4E-BAE4-0E79EFA8D290}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\external\recastnavigation\DetourCrowd\Include\DetourCrowd.h">
+      <Filter>external\recastnavigation\DetourCrowd\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\recastnavigation\DetourCrowd\Include\DetourLocalBoundary.h">
+      <Filter>external\recastnavigation\DetourCrowd\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\recastnavigation\DetourCrowd\Include\DetourObstacleAvoidance.h">
+      <Filter>external\recastnavigation\DetourCrowd\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\recastnavigation\DetourCrowd\Include\DetourPathCorridor.h">
+      <Filter>external\recastnavigation\DetourCrowd\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\recastnavigation\DetourCrowd\Include\DetourPathQueue.h">
+      <Filter>external\recastnavigation\DetourCrowd\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\recastnavigation\DetourCrowd\Include\DetourProximityGrid.h">
+      <Filter>external\recastnavigation\DetourCrowd\Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\external\recastnavigation\DetourCrowd\Source\DetourCrowd.cpp">
+      <Filter>external\recastnavigation\DetourCrowd\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\external\recastnavigation\DetourCrowd\Source\DetourLocalBoundary.cpp">
+      <Filter>external\recastnavigation\DetourCrowd\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\external\recastnavigation\DetourCrowd\Source\DetourObstacleAvoidance.cpp">
+      <Filter>external\recastnavigation\DetourCrowd\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\external\recastnavigation\DetourCrowd\Source\DetourPathCorridor.cpp">
+      <Filter>external\recastnavigation\DetourCrowd\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\external\recastnavigation\DetourCrowd\Source\DetourPathQueue.cpp">
+      <Filter>external\recastnavigation\DetourCrowd\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\external\recastnavigation\DetourCrowd\Source\DetourProximityGrid.cpp">
+      <Filter>external\recastnavigation\DetourCrowd\Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
