@@ -170,7 +170,7 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 		}
 	}
 
-	runLongTermPlanning(_goalQueue.front().targetLocation, dont_plan);
+	runLongTermPlanning2(_goalQueue.front().targetLocation, dont_plan);
 
 	// std::cout << "first waypoint: " << _waypoints.front() << " agents position: " << position() << std::endl;
 	/*

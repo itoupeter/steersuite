@@ -162,6 +162,7 @@ bool AgentInterface::runLongTermPlanning2(Util::Point goalLocation, bool dontPla
 	return true;
 }
 
+//---find nearest AGENT_NEIGHBOURS agents---
 void AgentInterface::insertAgentNeighbor(const SteerLib::AgentInterface *agent, float &rangeSq)
 {
 	if (this != agent) {
