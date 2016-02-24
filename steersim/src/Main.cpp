@@ -19,7 +19,6 @@
 #include <cctype>
 #include <algorithm>
 
-
 using namespace std;
 using namespace SteerLib;
 using namespace Util;

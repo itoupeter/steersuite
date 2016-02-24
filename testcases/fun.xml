@@ -99,7 +99,7 @@
 
   </agent>
 
-  <agent>
+<!--   <agent>
     <name>C</name>
     <initialConditions>
       <radius>0.5</radius>
@@ -116,5 +116,6 @@
     </goalSequence>
 
   </agent>
-
+ -->
+ 
 </SteerBenchTestCase>

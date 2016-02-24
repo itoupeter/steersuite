@@ -16,7 +16,7 @@
 // #include "testcaseio/Behaviour.h"
 
 #define MAX_SPEED 2.6f
-#define PERFERED_SPEED 1.33 // TODO not added to parameters yet.
+#define PERFERED_SPEED 0.33 // TODO not added to parameters yet. 1.33
 
 
 #define ACCELERATION 0.5 // = v/A
@@ -40,7 +40,6 @@
 #define GOAL_THRESHOLD_MULTIPLIER 2.5
 
 #define USE_PLANNING 1
-// #define DRAW_ANNOTATIONS 1
 #define USE_CIRCLES 1
 // #define _DEBUG_ 1
 namespace SocialForcesGlobals {

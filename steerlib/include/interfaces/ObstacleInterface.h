@@ -29,7 +29,7 @@ namespace SteerLib {
 		virtual const Util::AxisAlignedBox & getBounds() = 0;
 		virtual void setBounds(const Util::AxisAlignedBox & bounds) = 0;
 
-		/// @name The SpatialDatabaseItem interface
+		/// @  The SpatialDatabaseItem interface
 		/// @brief This interface is kept pure abstract.
 		//@{
 		virtual bool isAgent() = 0;

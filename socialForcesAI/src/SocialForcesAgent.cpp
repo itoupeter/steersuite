@@ -962,9 +962,9 @@ void SocialForcesAgent::draw()
 	DrawLib::drawLine(position(), this->_currentLocalTarget, gGray10);
 	DrawLib::drawStar(this->_currentLocalTarget+Util::Vector(0,0.001,0), Util::Vector(1,0,0), 0.24f, gGray10);
 
-	/*
+	
 	// draw normals and closest points on walls
-	std::set<SteerLib::ObstacleInterface * > tmp_obs = gEngine->getObstacles();
+	std::set<SteerLib::ObstacleInterface * > tmp_obs = _gEngine->getObstacles();
 
 	for (std::set<SteerLib::ObstacleInterface * >::iterator tmp_o = tmp_obs.begin();  tmp_o != tmp_obs.end();  tmp_o++)
 	{
@@ -978,7 +978,6 @@ void SocialForcesAgent::draw()
 		std::pair<float, Util::Point> min_stuff = minimum_distance(line.first, line.second, position());
 		DrawLib::drawStar(min_stuff.second, Util::Vector(1,0,0), 0.34f, gGreen);
 	}
-	*/
 
 #endif
 

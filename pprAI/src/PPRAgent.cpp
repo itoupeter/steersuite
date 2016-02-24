@@ -1959,7 +1959,8 @@ void PPRAgent::doCommandBasedSteering()
 void PPRAgent::collectObjectsInVisualField()
 {
 	_neighbors.clear();
-	getSimulationEngine()->getSpatialDatabase()->getItemsInVisualField(_neighbors, _position.x-_PPRParams.ped_query_radius, _position.x+_PPRParams.ped_query_radius,
+	getSimulationEngine()->getSpatialDatabase()->getItemsInVisualField(_neighbors, 
+		_position.x-_PPRParams.ped_query_radius, _position.x+_PPRParams.ped_query_radius,
 		_position.z-_PPRParams.ped_query_radius, _position.z+_PPRParams.ped_query_radius, dynamic_cast<SpatialDatabaseItemPtr>(this),
 		_position, _forward, (float)(_PPRParams.ped_query_radius*_PPRParams.ped_query_radius));
 }
@@ -1971,9 +1972,9 @@ void PPRAgent::collectObjectsInVisualField()
 bool PPRAgent::reachedCurrentGoal()
 {
 	return ( (_currentGoal.targetLocation-_position).lengthSquared() < (_PPRParams.ped_reached_target_distance_threshold * _PPRParams.ped_reached_target_distance_threshold) ||
-			(_currentGoal.goalType == GOAL_TYPE_AXIS_ALIGNED_BOX_GOAL &&
-											Util::boxOverlapsCircle2D(_currentGoal.targetRegion.xmin, _currentGoal.targetRegion.xmax,
-													_currentGoal.targetRegion.zmin, _currentGoal.targetRegion.zmax, this->position(), this->radius())));
+			(_currentGoal.goalType == GOAL_TYPE_AXIS_ALIGNED_BOX_GOAL 
+				&& Util::boxOverlapsCircle2D(_currentGoal.targetRegion.xmin, _currentGoal.targetRegion.xmax,
+				_currentGoal.targetRegion.zmin, _currentGoal.targetRegion.zmax, this->position(), this->radius())));
 }
 
 

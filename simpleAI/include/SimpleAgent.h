@@ -26,6 +26,7 @@
  * This class is instantiated when the engine calls SimpleAIModule::createAgent().
  *
  */
+
 class SimpleAgent : public SteerLib::AgentInterface
 {
 public:
@@ -33,6 +34,8 @@ public:
 	~SimpleAgent();
 	void reset(const SteerLib::AgentInitialConditions & initialConditions, SteerLib::EngineInterface * engineInfo);
 	void updateAI(float timeStamp, float dt, unsigned int frameNumber);
+	Util::Vector calcWallNormal(SteerLib::ObstacleInterface* obs);
+	Util::Vector calcObsNormal(SteerLib::ObstacleInterface* obs);
 	void disable();
 	void draw();
 

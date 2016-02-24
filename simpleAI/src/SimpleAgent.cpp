@@ -11,7 +11,7 @@
 /// @file SimpleAgent.cpp
 /// @brief Implements the SimpleAgent class.
 
-#define MAX_FORCE_MAGNITUDE 3.0f
+#define MAX_FORCE_MAGNITUDE 10.0f
 #define MAX_SPEED 1.3f
 #define AGENT_MASS 1.0f
 
@@ -86,9 +86,9 @@ void SimpleAgent::reset(const SteerLib::AgentInitialConditions & initialConditio
 	assert(_radius != 0.0f);
 }
 
-
 void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 {
+
 	// for this function, we assume that all goals are of type GOAL_TYPE_SEEK_STATIC_TARGET.
 	// the error check for this was performed in reset().
 	Util::AutomaticFunctionProfiler profileThisFunction( &SimpleAIGlobals::gPhaseProfilers->aiProfiler );
@@ -110,11 +110,88 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 		}
 	}
 
+	//---social force---
+	static Util::Vector f_to_1;
+	static float vision( 5.f );
+
+	static float w_at( 1.f );
+	static float w_wa( 1.f );
+	static float w_ob( 1.f );
+	static float w_ot( 1.f );
+	Util::Vector f_at;
+	Util::Vector f_wa;
+	Util::Vector f_ob;
+	Util::Vector f_ot;
+
+	//---force towards attractor---
+	f_at = vectorToGoal;
+
+	//---force to avoid wall, obstacle, other agents---
+	std::set< SteerLib::SpatialDatabaseItemPtr > neighbors;
+
+	neighbors.clear();
+	getSimulationEngine()->getSpatialDatabase()->getItemsInRange( neighbors,
+		_position.x - ( this->_radius + vision ),
+		_position.x + ( this->_radius + vision ),
+		_position.z - ( this->_radius + vision ),
+		_position.z + ( this->_radius + vision ),
+		dynamic_cast< SteerLib::SpatialDatabaseItemPtr >( this ) );
+
+	for( auto neighbor : neighbors ){
+		
+		if( neighbor->isAgent() ){
+
+			//---other agent---
+			SteerLib::AgentInterface *other = dynamic_cast< SteerLib::AgentInterface * >( neighbor );
+		//	Util::Vector d_ji = position() - other->position();
+		//	Util::Vector v_i = velocity();
+		//	Util::Vector t_j = Util::normalize( Util::cross( Util::cross( d_ji, t_j ), d_ji ) );
+		//	float w_d_i = d_ji.lengthSquared() - vision; w_d_i *= w_d_i;
+		//	float w_o_i = velocity() * other->velocity() > 0 ? 1.2f : 2.4f;
+		//	
+		//	f_ot += t_j * w_d_i * w_o_i;
+			
+		//}else{
+		//	
+		//	//---obstacle---
+		//	SteerLib::ObstacleInterface *other = dynamic_cast< SteerLib::ObstacleInterface * >( neighbor );
+		//	SteerLib::CircleObstacle *other_cir = dynamic_cast< SteerLib::CircleObstacle * >( other );
+
+		//	if( other_cir != NULL ){
+		//		
+		//		//---circular obstacle---
+		//		Util::Vector d_ki = position() - other_cir->position();
+		//		Util::Vector v_i = velocity();
+		//		Util::Vector f_ob_ki = Util::normalize( Util::cross( Util::cross( d_ki, v_i ), d_ki ) );
+
+		//		f_ob += f_ob_ki * w_ob;
+		//	}else{
+		//		
+		//		//---wall---
+		//		Util::Vector n_w = calcWallNormal( other );
+		//		Util::Vector v_i = velocity();
+		//		Util::Vector f_wa_ki = Util::normalize( Util::cross( Util::cross( n_w, v_i ), n_w ) );
+
+		//		f_wa += f_wa_ki * w_wa;
+		//	}
+		}
+	}
+
+	//---net force---
+	Util::Vector f_to;
+	f_to = Util::Vector( 0.f, 0.f, 0.f )
+		//+ f_to_1 
+		+ f_at * w_at 
+		//+ f_wa * w_wa 
+		//+ f_ob * w_ob 
+		+ f_ot * w_ot
+		;
+
 	// use the vectorToGoal as a force for the agent to steer towards its goal.
 	// the euler integration step will clamp this vector to a reasonable value, if needed.
 	// also, the Euler step updates the agent's position in the spatial database.
-	_doEulerStep(vectorToGoal, dt);
-
+	_doEulerStep( f_to, dt);
+	f_to_1 = vectorToGoal;
 }
 
 SteerLib::EngineInterface * SimpleAgent::getSimulationEngine()
@@ -169,4 +246,103 @@ void SimpleAgent::_doEulerStep(const Util::Vector & steeringDecisionForce, float
 	gSpatialDatabase->updateObject( this, oldBounds, newBounds);
 
 	_position = newPosition;
+}
+
+Util::Vector SimpleAgent::calcWallNormal(SteerLib::ObstacleInterface* obs)
+{
+	Util::AxisAlignedBox box = obs->getBounds();
+	if ( position().x > box.xmax )
+	{
+		if ( position().z > box.zmax)
+		{
+			if (fabs(position().z - box.zmax) >
+				fabs(position().x - box.xmax))
+			{
+				return Util::Vector(0, 0, 1);
+			}
+			else
+			{
+				return Util::Vector(1, 0, 0);
+			}
+
+		}
+		else if ( position().z < box.zmin )
+		{
+			if (fabs(position().z - box.zmin) >
+				fabs(position().x - box.xmax))
+			{
+				return Util::Vector(0, 0, -1);
+			}
+			else
+			{
+				return Util::Vector(1, 0, 0);
+			}
+
+		}
+		else
+		{ // in between zmin and zmax
+			return Util::Vector(1, 0, 0);
+		}
+
+	}
+	else if ( position().x < box.xmin )
+	{
+		if ( position().z > box.zmax )
+		{
+			if (fabs(position().z - box.zmax) >
+				fabs(position().x - box.xmin))
+			{
+				return Util::Vector(0, 0, 1);
+			}
+			else
+			{
+				return Util::Vector(-1, 0, 0);
+			}
+
+		}
+		else if ( position().z < box.zmin )
+		{
+			if (fabs(position().z - box.zmin) >
+				fabs(position().x - box.xmin))
+			{
+				return Util::Vector(0, 0, -1);
+			}
+			else
+			{
+				return Util::Vector(-1, 0, 0);
+			}
+
+		}
+		else
+		{ // in between zmin and zmax
+			return Util::Vector(-1, 0, 0);
+		}
+	}
+	else // between xmin and xmax
+	{
+		if ( position().z > box.zmax )
+		{
+			return Util::Vector(0, 0, 1);
+		}
+		else if ( position().z < box.zmin)
+		{
+			return Util::Vector(0, 0, -1);
+		}
+		else
+		{ // What do we do if the agent is inside the wall?? Lazy Normal
+			return calcObsNormal( obs );
+		}
+	}
+
+}
+
+/**
+* Treats Obstacles as a circle and calculates normal
+*/
+Util::Vector SimpleAgent::calcObsNormal(SteerLib::ObstacleInterface* obs)
+{
+	Util::AxisAlignedBox box = obs->getBounds();
+	Util::Point obs_centre = Util::Point((box.xmax+box.xmin)/2, (box.ymax+box.ymin)/2,
+		(box.zmax+box.zmin)/2);
+	return normalize(position() - obs_centre);
 }
