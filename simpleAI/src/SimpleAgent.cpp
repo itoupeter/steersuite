@@ -8,11 +8,22 @@
 #include "SimpleAgent.h"
 #include "SimpleAIModule.h"
 
+#include <iostream>
+using std::endl;
+
+#include <fstream>
+using std::fstream;
+
+#include <ios>
+using std::ios;
+
+#define ASSERT( x, y ) if( !x ) log << "\nassert failed " << y << endl;
+
 /// @file SimpleAgent.cpp
 /// @brief Implements the SimpleAgent class.
 
-#define MAX_FORCE_MAGNITUDE 10.0f
-#define MAX_SPEED 1.3f
+#define MAX_FORCE_MAGNITUDE 3.0f
+#define MAX_SPEED 0.3f
 #define AGENT_MASS 1.0f
 
 SimpleAgent::SimpleAgent()
@@ -110,6 +121,10 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 		}
 	}
 
+	//---log---
+	static fstream log( "_log.txt", ios::out );
+	static int flag = 0;
+
 	//---social force---
 	static Util::Vector f_to_1;
 	static float vision( 5.f );
@@ -138,42 +153,42 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 		dynamic_cast< SteerLib::SpatialDatabaseItemPtr >( this ) );
 
 	for( auto neighbor : neighbors ){
-		
+
 		if( neighbor->isAgent() ){
 
 			//---other agent---
 			SteerLib::AgentInterface *other = dynamic_cast< SteerLib::AgentInterface * >( neighbor );
-		//	Util::Vector d_ji = position() - other->position();
-		//	Util::Vector v_i = velocity();
-		//	Util::Vector t_j = Util::normalize( Util::cross( Util::cross( d_ji, t_j ), d_ji ) );
-		//	float w_d_i = d_ji.lengthSquared() - vision; w_d_i *= w_d_i;
-		//	float w_o_i = velocity() * other->velocity() > 0 ? 1.2f : 2.4f;
-		//	
-		//	f_ot += t_j * w_d_i * w_o_i;
+			Util::Vector d_ji = position() - other->position();
+			Util::Vector v_i = velocity();
+			//if( d_ji * _forward > 0 ) continue;
+			Util::Vector t_j = Util::normalize( Util::cross( Util::cross( d_ji, v_i ), d_ji ) );
+			float w_d_i = d_ji.length() - vision; w_d_i *= w_d_i;
+			float w_o_i = velocity() * other->velocity() > 0.f ? 1.2f : 2.4f;
 			
-		//}else{
-		//	
-		//	//---obstacle---
-		//	SteerLib::ObstacleInterface *other = dynamic_cast< SteerLib::ObstacleInterface * >( neighbor );
-		//	SteerLib::CircleObstacle *other_cir = dynamic_cast< SteerLib::CircleObstacle * >( other );
+			f_ot += t_j * w_d_i * w_o_i;
+	//		
+	//	}else{
 
-		//	if( other_cir != NULL ){
-		//		
-		//		//---circular obstacle---
-		//		Util::Vector d_ki = position() - other_cir->position();
-		//		Util::Vector v_i = velocity();
-		//		Util::Vector f_ob_ki = Util::normalize( Util::cross( Util::cross( d_ki, v_i ), d_ki ) );
+	//		//---obstacle---
+	//		SteerLib::ObstacleInterface *other_obs = dynamic_cast< SteerLib::ObstacleInterface * >( neighbor );
+	//		SteerLib::CircleObstacle *other_cir = dynamic_cast< SteerLib::CircleObstacle * >( other_obs );
 
-		//		f_ob += f_ob_ki * w_ob;
-		//	}else{
-		//		
-		//		//---wall---
-		//		Util::Vector n_w = calcWallNormal( other );
-		//		Util::Vector v_i = velocity();
-		//		Util::Vector f_wa_ki = Util::normalize( Util::cross( Util::cross( n_w, v_i ), n_w ) );
+	//		if( other_cir != NULL ){
+	//			//---circular obstacle---
+	//			Util::Vector d_ki = position() - other_cir->position();
+	//			Util::Vector v_i = velocity();
+	//			Util::Vector f_ob_ki = Util::normalize( Util::cross( Util::cross( d_ki, v_i ), d_ki ) );
 
-		//		f_wa += f_wa_ki * w_wa;
-		//	}
+	//			f_ob += f_ob_ki * w_ob;
+	//		}else{
+	//			
+	//			//---wall---
+	//			Util::Vector n_w = calcWallNormal( other_obs );
+	//			Util::Vector v_i = velocity();
+	//			Util::Vector f_wa_ki = Util::normalize( Util::cross( Util::cross( n_w, v_i ), n_w ) );
+
+	//			f_wa += f_wa_ki * w_wa;
+	//		}
 		}
 	}
 
@@ -191,7 +206,7 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 	// the euler integration step will clamp this vector to a reasonable value, if needed.
 	// also, the Euler step updates the agent's position in the spatial database.
 	_doEulerStep( f_to, dt);
-	f_to_1 = vectorToGoal;
+	f_to_1 = f_to;
 }
 
 SteerLib::EngineInterface * SimpleAgent::getSimulationEngine()
@@ -226,10 +241,11 @@ void SimpleAgent::draw()
 }
 
 
-void SimpleAgent::_doEulerStep(const Util::Vector & steeringDecisionForce, float dt)
+void SimpleAgent::_doEulerStep(Util::Vector & steeringDecisionForce, float dt)
 {
 	// compute acceleration, _velocity, and newPosition by a simple Euler step
 	const Util::Vector clippedForce = Util::clamp(steeringDecisionForce, MAX_FORCE_MAGNITUDE);
+	steeringDecisionForce = clippedForce;
 	Util::Vector acceleration = (clippedForce / AGENT_MASS);
 	_velocity = _velocity + (dt*acceleration);
 	_velocity = clamp(_velocity, MAX_SPEED);  // clamp _velocity to the max speed

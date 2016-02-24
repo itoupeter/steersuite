@@ -42,7 +42,7 @@ public:
 	bool enabled() const { return _enabled; }
 	Util::Point position() const { return _position; }
 	Util::Vector forward() const { return _forward; }
-	Util::Vector velocity() const { throw Util::GenericException("velocity() not implemented yet"); }
+	Util::Vector velocity() const { return _velocity; throw Util::GenericException("velocity() not implemented yet"); }
 	float radius() const { return _radius; }
 	const SteerLib::AgentGoalInfo & currentGoal() const { return _goalQueue.front(); }
 	size_t id() const { return 0;}
@@ -67,7 +67,7 @@ public:
 
 protected:
 	/// Updates position, velocity, and orientation of the agent, given the force and dt time step.
-	void _doEulerStep(const Util::Vector & steeringDecisionForce, float dt);
+	void _doEulerStep(Util::Vector & steeringDecisionForce, float dt);
 
 
 	virtual SteerLib::EngineInterface * getSimulationEngine();
