@@ -36,6 +36,8 @@ public:
 	void updateAI(float timeStamp, float dt, unsigned int frameNumber);
 	Util::Vector calcWallNormal(SteerLib::ObstacleInterface* obs);
 	Util::Vector calcObsNormal(SteerLib::ObstacleInterface* obs);
+	std::pair<Util::Point, Util::Point> calcWallPointsFromNormal(SteerLib::ObstacleInterface* obs, Util::Vector normal);
+	std::pair<float, Util::Point> minimum_distance(Util::Point l1, Util::Point l2, Util::Point p);
 	void disable();
 	void draw();
 
@@ -68,7 +70,7 @@ public:
 protected:
 	/// Updates position, velocity, and orientation of the agent, given the force and dt time step.
 	void _doEulerStep(Util::Vector & steeringDecisionForce, float dt);
-
+	void calNewPosition( Util::Vector &f_to, Util::Vector &f_r, float dt );
 
 	virtual SteerLib::EngineInterface * getSimulationEngine();
 };

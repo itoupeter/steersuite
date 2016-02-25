@@ -23,7 +23,7 @@ using std::ios;
 /// @brief Implements the SimpleAgent class.
 
 #define MAX_FORCE_MAGNITUDE 3.0f
-#define MAX_SPEED 0.3f
+#define MAX_SPEED 1.3f
 #define AGENT_MASS 1.0f
 
 SimpleAgent::SimpleAgent()
@@ -120,93 +120,145 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 			return;
 		}
 	}
+	
+	//---Pelechano's social force model (HiDAC)---
+	//---[PAB07]Controlling Individual Agents in High-Density Crowd Simulation---
 
 	//---log---
 	static fstream log( "_log.txt", ios::out );
-	static int flag = 0;
 
 	//---social force---
 	static Util::Vector f_to_1;
 	static float vision( 5.f );
-
 	static float w_at( 1.f );
 	static float w_wa( 1.f );
 	static float w_ob( 1.f );
-	static float w_ot( 1.f );
-	Util::Vector f_at;
-	Util::Vector f_wa;
-	Util::Vector f_ob;
-	Util::Vector f_ot;
+	static float w_ot( 5.f );
+	static float lamda( .3f );
+	Util::Vector f_to( 0.f, 0.f, 0.f );
+	Util::Vector f_at( 0.f, 0.f, 0.f );
+	Util::Vector f_wa( 0.f, 0.f, 0.f );
+	Util::Vector f_ob( 0.f, 0.f, 0.f );
+	Util::Vector f_ot( 0.f, 0.f, 0.f );
+	Util::Vector f_r( 0.f, 0.f, 0.f );
+	Util::Vector f_r_ot( 0.f, 0.f, 0.f );
+	Util::Vector f_r_ob( 0.f, 0.f, 0.f );
+	Util::Vector f_r_wa( 0.f, 0.f, 0.f );	
 
 	//---force towards attractor---
 	f_at = vectorToGoal;
 
-	//---force to avoid wall, obstacle, other agents---
+	//---computer forces---
 	std::set< SteerLib::SpatialDatabaseItemPtr > neighbors;
 
 	neighbors.clear();
 	getSimulationEngine()->getSpatialDatabase()->getItemsInRange( neighbors,
-		_position.x - ( this->_radius + vision ),
-		_position.x + ( this->_radius + vision ),
-		_position.z - ( this->_radius + vision ),
-		_position.z + ( this->_radius + vision ),
+		_position.x - vision, _position.x + vision,
+		_position.z - vision, _position.z + vision,
 		dynamic_cast< SteerLib::SpatialDatabaseItemPtr >( this ) );
 
 	for( auto neighbor : neighbors ){
 
 		if( neighbor->isAgent() ){
 
-			//---other agent---
+			//---agent avoidance---
 			SteerLib::AgentInterface *other = dynamic_cast< SteerLib::AgentInterface * >( neighbor );
 			Util::Vector d_ji = position() - other->position();
 			Util::Vector v_i = velocity();
-			//if( d_ji * _forward > 0 ) continue;
 			Util::Vector t_j = Util::normalize( Util::cross( Util::cross( d_ji, v_i ), d_ji ) );
 			float w_d_i = d_ji.length() - vision; w_d_i *= w_d_i;
-			float w_o_i = velocity() * other->velocity() > 0.f ? 1.2f : 2.4f;
+			float w_o_i = velocity() * other->velocity() > 0.f ? 1.f : 2.4f;
 			
 			f_ot += t_j * w_d_i * w_o_i;
-	//		
-	//	}else{
+			log << "f_ot: " << f_ot << endl;
 
-	//		//---obstacle---
-	//		SteerLib::ObstacleInterface *other_obs = dynamic_cast< SteerLib::ObstacleInterface * >( neighbor );
-	//		SteerLib::CircleObstacle *other_cir = dynamic_cast< SteerLib::CircleObstacle * >( other_obs );
+			//---agent repulsion---
+			if( other->computePenetration( position(), radius() ) < 1e-6 ) continue;
+			//---personal pushing ability epsilon should be added here---
+			f_r_ot = d_ji * ( radius() + other->radius() - d_ji.length() ) / d_ji.length();
+			log << "f_r_ot: " << f_r_ot << endl;
+						
+		}else{
 
-	//		if( other_cir != NULL ){
-	//			//---circular obstacle---
-	//			Util::Vector d_ki = position() - other_cir->position();
-	//			Util::Vector v_i = velocity();
-	//			Util::Vector f_ob_ki = Util::normalize( Util::cross( Util::cross( d_ki, v_i ), d_ki ) );
+			//---obstacle avoidance---
+			SteerLib::ObstacleInterface *other_obs = dynamic_cast< SteerLib::ObstacleInterface * >( neighbor );
+			SteerLib::CircleObstacle *other_cir = dynamic_cast< SteerLib::CircleObstacle * >( other_obs );
 
-	//			f_ob += f_ob_ki * w_ob;
-	//		}else{
-	//			
-	//			//---wall---
-	//			Util::Vector n_w = calcWallNormal( other_obs );
-	//			Util::Vector v_i = velocity();
-	//			Util::Vector f_wa_ki = Util::normalize( Util::cross( Util::cross( n_w, v_i ), n_w ) );
+			if( other_cir != NULL ){
 
-	//			f_wa += f_wa_ki * w_wa;
-	//		}
+				//---circular obstacle---
+				Util::Vector d_ki = position() - other_cir->position();
+				Util::Vector v_i = velocity();
+				Util::Vector f_ob_ki = Util::normalize( Util::cross( Util::cross( d_ki, v_i ), d_ki ) );
+
+				f_ob += f_ob_ki;
+				log << "f_ob: " << f_ob << endl;
+
+				//---obstacle repulsion---
+				if( other_cir->computePenetration( position(), radius() ) < 1e-6 ) continue;
+				//---personal pushing ability epsilon should be added here---
+				f_r_ob = d_ki * ( radius() + other_cir->radius() - d_ki.length() ) / d_ki.length();
+				log << "f_r_ob: " << f_r_ob << endl;
+
+			}else{
+
+				//---wall---
+				Util::Vector n_w = calcWallNormal( other_obs );
+				Util::Vector v_i = velocity();
+				if( Util::dot( n_w, v_i ) >= 0.f ) continue;
+				Util::Vector f_wa_ki = Util::normalize( Util::cross( Util::cross( n_w, v_i ), n_w ) );
+				if( Util::dot( Util::normalize( n_w ), Util::normalize( v_i ) ) < -.99f )
+					f_wa_ki = Util::normalize( Util::cross( Util::Vector( 0, 1, 0 ), n_w ) );
+				f_wa += f_wa_ki;
+				log << "f_wa: " << f_wa << endl;
+
+				//---wall repulsion---
+				if( other_obs->computePenetration( position(), radius() ) < 1e-6 ) continue;
+				//---personal pushing ability epsilon should be added here---
+				auto edge = calcWallPointsFromNormal( other_obs, n_w );
+				auto min_dist = minimum_distance( edge.first, edge.second, position() );
+				f_r_wa = n_w * ( radius() - min_dist.first ) / min_dist.first;
+				log << "f_r_wa: " << f_r_wa << endl;
+			}
 		}
 	}
 
-	//---net force---
-	Util::Vector f_to;
+	//---net repulsion---
+	f_r = f_r_ob + f_r_wa + f_r_ot * lamda;
+	f_r = Util::Vector();
+	log << "f_r: " << f_r << endl;
+
+	//---net avoidance---
 	f_to = Util::Vector( 0.f, 0.f, 0.f )
 		//+ f_to_1 
 		+ f_at * w_at 
-		//+ f_wa * w_wa 
-		//+ f_ob * w_ob 
-		+ f_ot * w_ot
+		+ f_wa * w_wa 
+		+ f_ob * w_ob 
+		+ f_ot * w_ot 
 		;
+	log << "f_to: " << f_to << endl;
 
-	// use the vectorToGoal as a force for the agent to steer towards its goal.
-	// the euler integration step will clamp this vector to a reasonable value, if needed.
-	// also, the Euler step updates the agent's position in the spatial database.
-	_doEulerStep( f_to, dt);
+	//---calculate new position---
+	calNewPosition( Util::normalize( f_to ), f_r, dt );
+
+	//_doEulerStep( f_to, dt );
 	f_to_1 = f_to;
+}
+
+void SimpleAgent::calNewPosition( Util::Vector &f_to, Util::Vector &f_r, float dt ){
+
+	static float acceleration = 1.f;
+
+	float v = _velocity.length() + acceleration * dt;
+	if( v > MAX_SPEED ) v = MAX_SPEED;
+
+	float a = f_r.length() > 0 ? 0 : 3;
+
+	Util::Vector displacement = a * v * f_to * dt + f_r;
+
+	_position = _position + displacement;
+	_velocity = displacement;
+	_forward = Util::normalize( _velocity );
 }
 
 SteerLib::EngineInterface * SimpleAgent::getSimulationEngine()
@@ -239,7 +291,6 @@ void SimpleAgent::draw()
 	}
 #endif
 }
-
 
 void SimpleAgent::_doEulerStep(Util::Vector & steeringDecisionForce, float dt)
 {
@@ -361,4 +412,48 @@ Util::Vector SimpleAgent::calcObsNormal(SteerLib::ObstacleInterface* obs)
 	Util::Point obs_centre = Util::Point((box.xmax+box.xmin)/2, (box.ymax+box.ymin)/2,
 		(box.zmax+box.zmin)/2);
 	return normalize(position() - obs_centre);
+}
+
+std::pair<Util::Point, Util::Point> SimpleAgent::calcWallPointsFromNormal(SteerLib::ObstacleInterface* obs, Util::Vector normal)
+{
+	Util::AxisAlignedBox box = obs->getBounds();
+	if ( normal.z == 1)
+	{
+		return std::make_pair(Util::Point(box.xmin,0,box.zmax), Util::Point(box.xmax,0,box.zmax));
+		// Ended here;
+	}
+	else if ( normal.z == -1 )
+	{
+		return std::make_pair(Util::Point(box.xmin,0,box.zmin), Util::Point(box.xmax,0,box.zmin));
+	}
+	else if ( normal.x == 1)
+	{
+		return std::make_pair(Util::Point(box.xmax,0,box.zmin), Util::Point(box.xmax,0,box.zmax));
+	}
+	else // normal.x == -1
+	{
+		return std::make_pair(Util::Point(box.xmin,0,box.zmin), Util::Point(box.xmin,0,box.zmax));
+	}
+}
+
+std::pair<float, Util::Point> SimpleAgent::minimum_distance(Util::Point l1, Util::Point l2, Util::Point p)
+{
+	// Return minimum distance between line segment vw and point p
+	float lSq = (l1 - l2).lengthSquared();  // i.e. |l2-l1|^2 -  avoid a sqrt
+	if (lSq == 0.0)
+		return std::make_pair((p - l2).length(),l1 );   // l1 == l2 case
+														// Consider the line extending the segment, parameterized as l1 + t (l2 - l1).
+														// We find projection of point p onto the line.
+														// It falls where t = [(p-l1) . (l2-l1)] / |l2-l1|^2
+	const float t = dot(p - l1, l2 - l1) / lSq;
+	if (t < 0.0)
+	{
+		return std::make_pair((p - l1).length(), l1);       // Beyond the 'l1' end of the segment
+	}
+	else if (t > 1.0)
+	{
+		return std::make_pair((p - l2).length(), l2);  // Beyond the 'l2' end of the segment
+	}
+	const Util::Point projection = l1 + t * (l2 - l1);  // Projection falls on the segment
+	return std::make_pair((p - projection).length(), projection) ;
 }

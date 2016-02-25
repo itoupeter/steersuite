@@ -277,9 +277,7 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 
 
 			// away = away + (away_tmp * ( radius() / ((position() - tmp_agent->position()).length() * B) ));
-			away = away +
-					(
-						away_tmp
+			away = away + ( away_tmp
 						*
 						(
 							_SocialForcesParams.sf_agent_a

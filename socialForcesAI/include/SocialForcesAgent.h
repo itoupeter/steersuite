@@ -24,9 +24,9 @@
  *
  */
 
- #define DRAW_ANNOTATIONS 1
- //#define DRAW_HISTORIES 1
- #define DRAW_COLLISIONS 1
+ //#define DRAW_ANNOTATIONS 0
+ //#define DRAW_HISTORIES 0
+ //#define DRAW_COLLISIONS 0
 
 
 class SocialForcesAgent : public SteerLib::AgentInterface
