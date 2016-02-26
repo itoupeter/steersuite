@@ -7,4 +7,5 @@ rem concentric-circles
 
 rem simpleAI
 rem pprAI
-rem sfA9
+rem sfAI
+rem rvo2dAI

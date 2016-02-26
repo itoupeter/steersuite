@@ -129,12 +129,12 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 
 	//---social force---
 	static Util::Vector f_to_1;
-	static float vision( 5.f );
+	static float vision( 3.f );
 	static float w_at( 1.f );
-	static float w_wa( 1.f );
+	static float w_wa( 3.f );
 	static float w_ob( 1.f );
 	static float w_ot( 5.f );
-	static float lamda( .3f );
+	static float lamda( 1.f );
 	Util::Vector f_to( 0.f, 0.f, 0.f );
 	Util::Vector f_at( 0.f, 0.f, 0.f );
 	Util::Vector f_wa( 0.f, 0.f, 0.f );
@@ -143,7 +143,7 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 	Util::Vector f_r( 0.f, 0.f, 0.f );
 	Util::Vector f_r_ot( 0.f, 0.f, 0.f );
 	Util::Vector f_r_ob( 0.f, 0.f, 0.f );
-	Util::Vector f_r_wa( 0.f, 0.f, 0.f );	
+	Util::Vector f_r_wa( 0.f, 0.f, 0.f );
 
 	//---force towards attractor---
 	f_at = vectorToGoal;
@@ -164,16 +164,17 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 			//---agent avoidance---
 			SteerLib::AgentInterface *other = dynamic_cast< SteerLib::AgentInterface * >( neighbor );
 			Util::Vector d_ji = position() - other->position();
-			Util::Vector v_i = velocity();
-			Util::Vector t_j = Util::normalize( Util::cross( Util::cross( d_ji, v_i ), d_ji ) );
-			float w_d_i = d_ji.length() - vision; w_d_i *= w_d_i;
-			float w_o_i = velocity() * other->velocity() > 0.f ? 1.f : 2.4f;
-			
-			f_ot += t_j * w_d_i * w_o_i;
+			//Util::Vector v_i = velocity();
+			//Util::Vector t_j = Util::normalize( Util::cross( Util::cross( d_ji, v_i ), d_ji ) );
+			//float w_d_i = d_ji.length() - vision; w_d_i *= w_d_i;
+			//float w_o_i = velocity() * other->velocity() >= 0.f ? 0.f : 2.4f;
+			//
+			//if( w_o_i != 0.f ) f_ot += t_j * w_d_i * w_o_i;
+			f_ot = d_ji * ( radius() / d_ji.length() );
 			log << "f_ot: " << f_ot << endl;
 
 			//---agent repulsion---
-			if( other->computePenetration( position(), radius() ) < 1e-6 ) continue;
+			if( d_ji.length() - radius() - other->radius() < 1e-6 ) continue;
 			//---personal pushing ability epsilon should be added here---
 			f_r_ot = d_ji * ( radius() + other->radius() - d_ji.length() ) / d_ji.length();
 			log << "f_r_ot: " << f_r_ot << endl;
@@ -206,9 +207,11 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 				Util::Vector n_w = calcWallNormal( other_obs );
 				Util::Vector v_i = velocity();
 				if( Util::dot( n_w, v_i ) >= 0.f ) continue;
-				Util::Vector f_wa_ki = Util::normalize( Util::cross( Util::cross( n_w, v_i ), n_w ) );
+				Util::Vector f_wa_ki;
 				if( Util::dot( Util::normalize( n_w ), Util::normalize( v_i ) ) < -.99f )
 					f_wa_ki = Util::normalize( Util::cross( Util::Vector( 0, 1, 0 ), n_w ) );
+				else
+					f_wa_ki = Util::normalize( Util::cross( Util::cross( n_w, v_i ), n_w ) );
 				f_wa += f_wa_ki;
 				log << "f_wa: " << f_wa << endl;
 
@@ -225,24 +228,25 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 
 	//---net repulsion---
 	f_r = f_r_ob + f_r_wa + f_r_ot * lamda;
-	f_r = Util::Vector();
 	log << "f_r: " << f_r << endl;
 
 	//---net avoidance---
 	f_to = Util::Vector( 0.f, 0.f, 0.f )
-		//+ f_to_1 
 		+ f_at * w_at 
-		+ f_wa * w_wa 
-		+ f_ob * w_ob 
-		+ f_ot * w_ot 
+		//+ f_wa * w_wa 
+		//+ f_ob * w_ob 
+		//+ f_ot * w_ot 
 		;
+	f_to = Util::normalize( f_to /*+ f_to_1*/ );
 	log << "f_to: " << f_to << endl;
 
+	//---save for next step---
+	f_to_1 = f_to;
+
 	//---calculate new position---
-	calNewPosition( Util::normalize( f_to ), f_r, dt );
+	calNewPosition( f_to, f_r, dt );
 
 	//_doEulerStep( f_to, dt );
-	f_to_1 = f_to;
 }
 
 void SimpleAgent::calNewPosition( Util::Vector &f_to, Util::Vector &f_r, float dt ){
@@ -252,13 +256,14 @@ void SimpleAgent::calNewPosition( Util::Vector &f_to, Util::Vector &f_r, float d
 	float v = _velocity.length() + acceleration * dt;
 	if( v > MAX_SPEED ) v = MAX_SPEED;
 
-	float a = f_r.length() > 0 ? 0 : 3;
+	float a = f_r.length() > 0 ? 0 : 10.f;
 
 	Util::Vector displacement = a * v * f_to * dt + f_r;
 
 	_position = _position + displacement;
 	_velocity = displacement;
-	_forward = Util::normalize( _velocity );
+	if( _velocity.lengthSquared() > 0 )
+		_forward = Util::normalize( _velocity );
 }
 
 SteerLib::EngineInterface * SimpleAgent::getSimulationEngine()
@@ -270,7 +275,7 @@ void SimpleAgent::draw()
 {
 #ifdef ENABLE_GUI
 	// if the agent is selected, do some annotations just for demonstration
-	if (gEngine->isAgentSelected(this)) {
+	if (true || gEngine->isAgentSelected(this)) {
 		Util::Ray ray;
 		ray.initWithUnitInterval(_position, _forward);
 		float t = 0.0f;

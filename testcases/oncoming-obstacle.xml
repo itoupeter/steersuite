@@ -25,7 +25,7 @@
   </header>
   
   <suggestedCameraView>
-    <position> <x>0</x> <y>24</y> <z>-12</z> </position>
+    <position> <x>0</x> <y>24</y> <z>12</z> </position>
     <lookat> <x>0</x> <y>0</y> <z>0</z> </lookat>
     <up> <x>0</x> <y>1</y> <z>0</z> </up>
     <fovy>45</fovy>
@@ -73,8 +73,8 @@
       </seekStaticTarget>
     </goalSequence>
   </agent>
-<!-- 
-  <agent>
+ 
+   <agent>
     <name>C</name>
     <initialConditions>
       <radius>0.5</radius>
@@ -90,5 +90,5 @@
       </seekStaticTarget>
     </goalSequence>
   </agent>
- -->
+ 
 </SteerBenchTestCase>
