@@ -1,1 +1,1 @@
-steersim -replay simple.rec
+steersim -replay _simple.rec

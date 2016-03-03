@@ -4,6 +4,10 @@
 //
 
 
+#include <random>
+using std::default_random_engine;
+using std::uniform_int_distribution;
+
 #include "SteerLib.h"
 #include "SimpleAgent.h"
 #include "SimpleAIModule.h"
@@ -22,7 +26,7 @@ using std::ios;
 /// @file SimpleAgent.cpp
 /// @brief Implements the SimpleAgent class.
 
-#define MAX_FORCE_MAGNITUDE 3.0f
+#define MAX_FORCE_MAGNITUDE 10000.0f
 #define MAX_SPEED 1.3f
 #define AGENT_MASS 1.0f
 
@@ -108,7 +112,7 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 
 	// it is up to the agent to decide what it means to have "accomplished" or "completed" a goal.
 	// for the simple AI, if the agent's distance to its goal is less than its radius, then the agent has reached the goal.
-	if (vectorToGoal.lengthSquared() < _radius * _radius) {
+	if (vectorToGoal.lengthSquared() < _radius * _radius * 4.f ) {
 		_goalQueue.pop();
 		if (_goalQueue.size() != 0) {
 			// in this case, there are still more goals, so start steering to the next goal.
@@ -129,12 +133,21 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 
 	//---social force---
 	static Util::Vector f_to_1;
-	static float vision( 3.f );
-	static float w_at( 1.f );
-	static float w_wa( 3.f );
+	static bool isStopping = false;
+	static bool isWaiting = true;
+	static int waitCountdown = 0;
+	static float rect_width = 2.f;
+	static float rect_height = 4.f;
+	static float vision( 10.f );
+	static float w_at( 10.f );
+	static float w_wa( 1.f );
 	static float w_ob( 1.f );
 	static float w_ot( 5.f );
 	static float lamda( 1.f );
+	static float w_r_wa( 1000.f );
+	static float w_r_ot( 1000.f );
+	static default_random_engine generator;
+	static uniform_int_distribution< int > distribution( 0, 100 );
 	Util::Vector f_to( 0.f, 0.f, 0.f );
 	Util::Vector f_at( 0.f, 0.f, 0.f );
 	Util::Vector f_wa( 0.f, 0.f, 0.f );
@@ -146,7 +159,7 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 	Util::Vector f_r_wa( 0.f, 0.f, 0.f );
 
 	//---force towards attractor---
-	f_at = vectorToGoal;
+	f_at = Util::normalize( vectorToGoal );
 
 	//---computer forces---
 	std::set< SteerLib::SpatialDatabaseItemPtr > neighbors;
@@ -157,6 +170,13 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 		_position.z - vision, _position.z + vision,
 		dynamic_cast< SteerLib::SpatialDatabaseItemPtr >( this ) );
 
+	visionRectFilter( rect_width, rect_height, _position, _forward, neighbors );
+
+	if( waitCountdown > 0 ){
+		--waitCountdown;
+		return;
+	}
+
 	for( auto neighbor : neighbors ){
 
 		if( neighbor->isAgent() ){
@@ -164,19 +184,30 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 			//---agent avoidance---
 			SteerLib::AgentInterface *other = dynamic_cast< SteerLib::AgentInterface * >( neighbor );
 			Util::Vector d_ji = position() - other->position();
+			Util::Vector f_ot_ij;
+			Util::Vector tmp = Util::cross( _forward, other->forward() );
+			float r_ij = radius() + other->radius() - d_ji.length();
+			
+			if( tmp.y > 0 ){
+				f_ot_ij = Util::cross( Util::Vector( 0, -1, 0 ), _forward );
+			}else{
+				f_ot_ij = Util::cross( Util::Vector( 0, 1, 0 ), _forward );
+			}
 			//Util::Vector v_i = velocity();
 			//Util::Vector t_j = Util::normalize( Util::cross( Util::cross( d_ji, v_i ), d_ji ) );
 			//float w_d_i = d_ji.length() - vision; w_d_i *= w_d_i;
-			//float w_o_i = velocity() * other->velocity() >= 0.f ? 0.f : 2.4f;
+			//float w_o_i = velocity() * other->velocity() >= 0.f ? 1.f : 5.f;
 			//
 			//if( w_o_i != 0.f ) f_ot += t_j * w_d_i * w_o_i;
-			f_ot = d_ji * ( radius() / d_ji.length() );
+			//f_ot += d_ji / d_ji.length() * 5.f * exp( r_ij / .1f ) * w_o_i;
+			f_ot += f_ot_ij;
 			log << "f_ot: " << f_ot << endl;
 
 			//---agent repulsion---
-			if( d_ji.length() - radius() - other->radius() < 1e-6 ) continue;
+			if( r_ij < 1e-6 ) continue;
+			
 			//---personal pushing ability epsilon should be added here---
-			f_r_ot = d_ji * ( radius() + other->radius() - d_ji.length() ) / d_ji.length();
+			f_r_ot = Util::normalize( d_ji / d_ji.length() ) * r_ij;
 			log << "f_r_ot: " << f_r_ot << endl;
 						
 		}else{
@@ -203,24 +234,33 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 
 			}else{
 
-				//---wall---
+				//---wall avoidance---
 				Util::Vector n_w = calcWallNormal( other_obs );
 				Util::Vector v_i = velocity();
+				
+				//---agent not moving---
+				if( v_i.lengthSquared() < 1e-5 ) continue;
+
+				//---leaving a wall, ignore---
 				if( Util::dot( n_w, v_i ) >= 0.f ) continue;
+
+				//---approaching a wall, steer away---
 				Util::Vector f_wa_ki;
-				if( Util::dot( Util::normalize( n_w ), Util::normalize( v_i ) ) < -.99f )
+				if( Util::dot( n_w, v_i ) <= 0.f )
 					f_wa_ki = Util::normalize( Util::cross( Util::Vector( 0, 1, 0 ), n_w ) );
 				else
-					f_wa_ki = Util::normalize( Util::cross( Util::cross( n_w, v_i ), n_w ) );
+					f_wa_ki = Util::normalize( Util::cross( Util::Vector( 0, -1, 0 ), n_w ) );
 				f_wa += f_wa_ki;
 				log << "f_wa: " << f_wa << endl;
 
 				//---wall repulsion---
+				//---no contact with wall---
 				if( other_obs->computePenetration( position(), radius() ) < 1e-6 ) continue;
+
 				//---personal pushing ability epsilon should be added here---
 				auto edge = calcWallPointsFromNormal( other_obs, n_w );
 				auto min_dist = minimum_distance( edge.first, edge.second, position() );
-				f_r_wa = n_w * ( radius() - min_dist.first ) / min_dist.first;
+				f_r_wa += Util::normalize( n_w ) * ( radius() - min_dist.first ) / min_dist.first;
 				log << "f_r_wa: " << f_r_wa << endl;
 			}
 		}
@@ -232,21 +272,64 @@ void SimpleAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 
 	//---net avoidance---
 	f_to = Util::Vector( 0.f, 0.f, 0.f )
+		+ f_to_1
 		+ f_at * w_at 
-		//+ f_wa * w_wa 
+		+ f_wa * w_wa 
+		+ f_r_wa * w_r_wa
 		//+ f_ob * w_ob 
-		//+ f_ot * w_ot 
+		+ f_ot * w_ot 
+		+ f_r_ot * w_r_ot
 		;
-	f_to = Util::normalize( f_to /*+ f_to_1*/ );
 	log << "f_to: " << f_to << endl;
 
 	//---save for next step---
-	f_to_1 = f_to;
+	f_to_1 = f_to = f_to * .5f;
 
 	//---calculate new position---
-	calNewPosition( f_to, f_r, dt );
+	//calNewPosition( f_to, f_r, dt );
 
-	//_doEulerStep( f_to, dt );
+	_doEulerStep( f_to, dt );
+}
+
+void SimpleAgent::visionRectFilter( float width, float height, Util::Point position, Util::Vector orientation, 
+	std::set< SteerLib::SpatialDatabaseItemPtr > &neighbors ){
+	
+	//---agent not moving---
+	if( orientation.lengthSquared() < 1e-5 ) return;
+
+	Util::Vector v = Util::normalize( orientation );
+	Util::Vector h = Util::cross( v, Util::Vector( 0, 1, 0 ) );
+
+	for( auto neighbor = neighbors.begin(); neighbor != neighbors.end();  ){
+
+		SteerLib::AgentInterface *other = dynamic_cast< SteerLib::AgentInterface * >( *neighbor );
+
+		//---not agent---
+		if( other == NULL ){
+			++neighbor;
+			continue;
+		}
+
+		Util::Vector error = other->position() - position;
+
+		//---exclude agents behind---
+		if( Util::dot( error, v ) <= 0.f ){
+			neighbors.erase( neighbor++ );
+			continue;
+		}
+
+		//---exclude agents out of rect---
+		if( abs( Util::dot( error, v ) ) > height ) {
+			neighbors.erase( neighbor++ );
+			continue;
+		}
+		if( abs( Util::dot( error, h ) ) > width * .5f ){
+			neighbors.erase( neighbor++ );
+			continue;
+		}
+
+		++neighbor;
+	}
 }
 
 void SimpleAgent::calNewPosition( Util::Vector &f_to, Util::Vector &f_r, float dt ){
@@ -278,7 +361,7 @@ void SimpleAgent::draw()
 	if (true || gEngine->isAgentSelected(this)) {
 		Util::Ray ray;
 		ray.initWithUnitInterval(_position, _forward);
-		float t = 0.0f;
+		float t = 0.f;
 		SteerLib::SpatialDatabaseItem * objectFound;
 		Util::DrawLib::drawLine(ray.pos, ray.eval(1.0f));
 		if (gSpatialDatabase->trace(ray, t, objectFound, this, false)) {

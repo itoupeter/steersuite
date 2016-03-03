@@ -33,6 +33,7 @@ public:
 	SimpleAgent();
 	~SimpleAgent();
 	void reset(const SteerLib::AgentInitialConditions & initialConditions, SteerLib::EngineInterface * engineInfo);
+	void visionRectFilter( float width, float height, Util::Point position, Util::Vector orientation, std::set< SteerLib::SpatialDatabaseItemPtr > &neighbors );
 	void updateAI(float timeStamp, float dt, unsigned int frameNumber);
 	Util::Vector calcWallNormal(SteerLib::ObstacleInterface* obs);
 	Util::Vector calcObsNormal(SteerLib::ObstacleInterface* obs);
